@@ -11,9 +11,6 @@ use ts_ef::{
 struct Args {
     #[arg(short, long)]
     include: Vec<String>,
-
-    #[arg(short, long, default_value_t = false)]
-    show_full: bool,
 }
 
 fn main() -> ExitCode {
@@ -38,13 +35,11 @@ fn main() -> ExitCode {
     for line in lines {
         let line = line.unwrap();
         let (_, should_print) = sm.run(&line);
-        if sm.is_finished() && !args.show_full {
-            break;
-        }
+
         if should_print {
             println!("{}", line);
-            if !sm.is_finished() {
-                was_logged = should_print;
+            if !was_logged {
+                was_logged = true;
             }
         }
     }
