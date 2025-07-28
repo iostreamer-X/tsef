@@ -2,7 +2,21 @@ use std::path::PathBuf;
 
 use path_matchers::{PathMatcher, glob};
 
+#[derive(PartialEq, Eq, Debug)]
+pub enum State {
+    ParseToPause,
+    ParseToContinue,
+    CheckEnd(bool),
+    End,
+}
+
+pub trait StateMachine {
+    fn is_finished(&self) -> bool;
+    fn run(&mut self, line: &String) -> (&State, bool);
+}
+
 pub mod ansi_state_machine;
+pub mod simple_state_machine;
 
 pub fn path_matches(list: &Vec<String>, path: &str) -> bool {
     for item in list {

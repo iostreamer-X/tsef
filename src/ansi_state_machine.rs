@@ -2,15 +2,7 @@ use core::panic;
 
 use ansi_parser::{AnsiParser, AnsiSequence, Output};
 
-use crate::path_matches;
-
-#[derive(PartialEq, Eq, Debug)]
-pub enum State {
-    ParseToPause,
-    ParseToContinue,
-    CheckEnd(bool),
-    End,
-}
+use crate::{State, StateMachine, path_matches};
 
 #[derive(PartialEq, Eq)]
 enum ParseResult {
@@ -85,8 +77,10 @@ impl AnsiStateMachine {
         }
         return (&self.state, parsing_to_pause);
     }
+}
 
-    pub fn run(&mut self, line: &String) -> (&State, bool) {
+impl StateMachine for AnsiStateMachine {
+    fn run(&mut self, line: &String) -> (&State, bool) {
         match self.state {
             State::ParseToPause => {
                 return self.process_parse_result(line, true);
@@ -110,5 +104,9 @@ impl AnsiStateMachine {
                 return (&self.state, true);
             }
         }
+    }
+
+    fn is_finished(&self) -> bool {
+        self.state == State::End
     }
 }
