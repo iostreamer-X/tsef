@@ -9,10 +9,19 @@ use ts_ef::{
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct Args {
-    #[arg(short, long)]
+    #[arg(
+        short,
+        long,
+        help = "Glob pattern to match. For example: src/features/**/*"
+    )]
     include: Vec<String>,
 
-    #[arg(short, long, default_value_t = false)]
+    #[arg(
+        short,
+        long,
+        default_value_t = false,
+        help = "Show the summary output as well when using --pretty with tsc"
+    )]
     show_full: bool,
 }
 
