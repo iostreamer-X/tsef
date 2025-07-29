@@ -6,6 +6,7 @@ use crate::{State, StateMachine, path_matches};
 
 #[derive(PartialEq, Eq)]
 enum ParseResult {
+    CheckEnd(bool),
     KeepState,
     Flip,
 }
@@ -13,18 +14,22 @@ enum ParseResult {
 pub struct AnsiStateMachine {
     pub identifier: AnsiSequence,
     pub state: State,
-    pub include: Vec<String>,
+    pub block: Vec<String>,
 }
+
 impl AnsiStateMachine {
-    pub fn new(identifier: AnsiSequence, include: Vec<String>) -> Self {
+    pub fn new(identifier: AnsiSequence, block: Vec<String>) -> Self {
         return Self {
             identifier,
             state: State::ParseToPause,
-            include,
+            block,
         };
     }
 
     fn parse_line(&self, line: &String, parsing_to_pause: bool) -> ParseResult {
+        if line.len() == 0 {
+            return ParseResult::CheckEnd(self.state == State::ParseToPause);
+        }
         let mut ansi_line = line.ansi_parse();
         let ansi = ansi_line.next();
         if ansi.is_none() {
@@ -47,7 +52,7 @@ impl AnsiStateMachine {
             Output::Escape(_) => panic!("Error parsing output!"),
         };
 
-        let should_block = !path_matches(&self.include, path);
+        let should_block = path_matches(&self.block, path);
         if parsing_to_pause {}
         let should_flip = match parsing_to_pause {
             true => should_block,
@@ -61,7 +66,9 @@ impl AnsiStateMachine {
 
     fn process_parse_result(&mut self, line: &String, parsing_to_pause: bool) -> (&State, bool) {
         let parse_result = self.parse_line(line, parsing_to_pause);
-        if parse_result == ParseResult::Flip {
+        if let ParseResult::CheckEnd(go_back_state) = parse_result {
+            self.state = State::CheckEnd(go_back_state);
+        } else if parse_result == ParseResult::Flip {
             self.state = match parsing_to_pause {
                 true => State::ParseToContinue,
                 false => State::ParseToPause,
@@ -81,6 +88,25 @@ impl StateMachine for AnsiStateMachine {
             State::ParseToContinue => {
                 return self.process_parse_result(line, false);
             }
+            State::CheckEnd(should_parse_to_pause) => {
+                if line.len() == 0 {
+                    self.state = State::End;
+                    return (&self.state, false);
+                }
+                if should_parse_to_pause {
+                    self.state = State::ParseToPause;
+                } else {
+                    self.state = State::ParseToContinue;
+                }
+                return self.run(line);
+            }
+            State::End => {
+                return (&self.state, true);
+            }
         }
+    }
+
+    fn is_finished(&self) -> bool {
+        self.state == State::End
     }
 }
