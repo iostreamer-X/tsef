@@ -2,6 +2,32 @@ use std::path::PathBuf;
 
 use path_matchers::{PathMatcher, glob};
 
+/*
+ * State Machine Diagram:
+ *
+ *     ┌─────────────────┐         ┌───────────────────┐
+ *     │   ParseToPause  │◄───────►│  ParseToContinue  │
+ *     └─────────┬───────┘         └─────────┬─────────┘
+ *               │                           │
+ *               │                           │
+ *               ▼                           ▼
+ *     ┌─────────────────────────────────────────────────┐
+ *     │            CheckEnd(bool, u8)                   │
+ *     └─────┬───────────────────┬───────────────────┬───┘
+ *           │                   │                   │
+ *           ▼                   ▼                   ▼
+ *     ┌─────────┐     ┌─────────────────┐     ┌─────────────────┐
+ *     │   End   │     │   ParseToPause  │     │ ParseToContinue │
+ *     └─────────┘     └─────────────────┘     └─────────────────┘
+ *
+ * State Transitions:
+ * • ParseToPause ⟷ ParseToContinue (bidirectional)
+ * • ParseToPause → CheckEnd
+ * • ParseToContinue → CheckEnd
+ * • CheckEnd → ParseToPause
+ * • CheckEnd → ParseToContinue
+ * • CheckEnd → End
+ */
 #[derive(PartialEq, Eq, Debug)]
 pub enum State {
     ParseToPause,
