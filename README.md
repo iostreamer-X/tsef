@@ -2,6 +2,8 @@
 
 A command-line tool that filters TypeScript compiler output to show errors only from specified files and directories.
 
+![Demo](/demo.gif)
+
 ## Overview
 
 `ts-ef` (TypeScript Error Filter) parses the output from `tsc` (TypeScript compiler) and filters errors based on file path patterns. This is particularly useful in large codebases where you want to focus on errors from specific modules or directories while ignoring errors from dependencies or unrelated code.
