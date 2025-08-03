@@ -1,7 +1,13 @@
 [package]
-name = "ts-ef"
-version = "0.1.0"
+name = "tf"
+version = "0.2.0"
 edition = "2024"
+readme = "README.md"
+repository = "https://github.com/iostreamer-X/tf"
+license = "MIT"
+keywords = ["typescript"]
+categories = ["command-line-utilities"]
+description = "A CLI tool that filters TypeScript compiler output to show errors only from specified files and directories."
 
 [dependencies]
 ansi-parser = "0.9.1"

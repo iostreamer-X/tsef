@@ -2,7 +2,7 @@ use std::process::ExitCode;
 
 use ansi_parser::{AnsiParser, Output};
 use clap::{Parser, command};
-use ts_ef::{
+use tf::{
     StateMachine, ansi_state_machine::AnsiStateMachine, simple_state_machine::SimpleStateMachine,
 };
 
