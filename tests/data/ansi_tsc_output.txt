@@ -1,0 +1,29 @@
+[96msrc/components/Header.tsx[0m:[93m15[0m:[93m7[0m - [91merror[0m[90m TS2322: [0mType 'string' is not assignable to type 'number'.
+
+[7m15[0m const count: number = "hello";
+[7m  [0m [91m      ~~~~~[0m
+
+[96msrc/utils/helpers.ts[0m:[93m23[0m:[93m3[0m - [91merror[0m[90m TS2322: [0mType 'undefined' is not assignable to type 'string'.
+
+[7m23[0m   return undefined;
+[7m  [0m   [91m~~~~~~[0m
+
+[96mnode_modules/@types/react/index.d.ts[0m:[93m1024[0m:[93m9[0m - [91merror[0m[90m TS2717: [0mSubsequent property declarations must have the same type.
+
+[7m1024[0m         interface Element {
+[7m    [0m         [91m~~~~~~~~~[0m
+
+[96msrc/features/orders/index.ts[0m:[93m42[0m:[93m15[0m - [91merror[0m[90m TS2345: [0mArgument of type 'string' is not assignable to parameter of type 'number'.
+
+[7m42[0m   processOrder("123");
+[7m  [0m               [91m~~~~~[0m
+
+
+
+Found 4 errors in 4 files.
+
+Errors  Files
+     1  src/components/Header.tsx[90m:15[0m
+     1  src/utils/helpers.ts[90m:23[0m
+     1  node_modules/@types/react/index.d.ts[90m:1024[0m
+     1  src/features/orders/index.ts[90m:42[0m
